@@ -28,6 +28,10 @@ public class ArrayPolynomial implements Polynomial {
         /**
          * Complete code here for lab assignment
          */
+
+        coefficients = Arrays.copyOf(coefficients, power+1);
+        coefficients[power] = coefficient;
+
     }
 
     /**
@@ -44,7 +48,16 @@ public class ArrayPolynomial implements Polynomial {
          * Create coefficient array of size equal to the degree of "another" plus 1
          * and copy coefficients from another
          */
+
+        double [] tempCoef = new double[another.degree()+1];
+        for(int i = 0; i<tempCoef.length; i++){
+            tempCoef[i] = another.coefficient(i);
+        }
+
+        coefficients = Arrays.copyOf(tempCoef, tempCoef.length+1);
+
     }
+
 
     @Override
     public void addTerm(int power, double coefficient) throws Exception {
@@ -53,6 +66,25 @@ public class ArrayPolynomial implements Polynomial {
          * Make sure you check power for validity !!
          * Expand coefficients array if necessary
          */
+        if (power < 0) {
+            throw new Exception("Invalid power for the term");
+        }
+
+
+        if(power>degree()){
+            double [] tempCoefficients = Arrays.copyOf(coefficients, coefficients.length+power);
+            coefficients = Arrays.copyOf(tempCoefficients, tempCoefficients.length);//Arrays in java are objects so if I did coefficients = tempCoefficients
+            // it would only reference it not copy it
+        }
+        if(coefficients[power]>0){
+            coefficients[power] = coefficients[power] + coefficient;
+        }
+        else{
+            coefficients[power] = coefficient;
+        }
+
+
+
     }
 
     @Override
@@ -68,7 +100,15 @@ public class ArrayPolynomial implements Polynomial {
          * Complete code here for lab assignment (Modify return statement !!)
          * Make sure you check power for validity !!
          */
-        return 0;
+        if (power < 0) {
+            try {
+                throw new Exception("Invalid power for the term");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        return coefficients[power];
     }
 
     @Override
@@ -76,6 +116,13 @@ public class ArrayPolynomial implements Polynomial {
         /**
          * Complete code here for lab assignment
          */
+
+        for(int i = coefficients.length-1; i>=0; i--){
+            if(coefficients[i]>0){
+                return i;
+            }
+        }
+
         return 0;
     }
 
