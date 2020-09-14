@@ -16,6 +16,7 @@ public class ArrayStudy {
         double [] [] a2 = replace(a1);
         System.out.println("Content of array after step (b)");
         printArray(a2);
+        
         return a2;
     }
 
