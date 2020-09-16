@@ -100,14 +100,7 @@ public class ArrayPolynomial implements Polynomial {
          * Complete code here for lab assignment (Modify return statement !!)
          * Make sure you check power for validity !!
          */
-        if (power < 0) {
-            try {
-                throw new Exception("Invalid power for the term");
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-
+        
         return coefficients[power];
     }
 
