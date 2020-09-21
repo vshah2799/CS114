@@ -2,6 +2,8 @@ package edu.njit.cs114;
 
 import java.util.Arrays;
 
+import static java.lang.Math.max;
+
 /**
  * Author: Ravi Varadarajan
  * Date created: 9/4/20
@@ -23,7 +25,7 @@ public class ArrayPolynomial implements Polynomial {
      */
     public ArrayPolynomial(int power, double coefficient) throws Exception {
         if (power < 0) {
-            throw new Exception("Invalid power for the term");
+                throw new Exception("Invalid power for the term");
         }
         /**
          * Complete code here for lab assignment
@@ -42,7 +44,7 @@ public class ArrayPolynomial implements Polynomial {
      * @param another
      * @throws Exception
      */
-    public ArrayPolynomial(Polynomial another) throws Exception {
+    public ArrayPolynomial(Polynomial another){
         /**
          * Complete code here for lab assignment
          * Create coefficient array of size equal to the degree of "another" plus 1
@@ -50,11 +52,11 @@ public class ArrayPolynomial implements Polynomial {
          */
 
         double [] tempCoef = new double[another.degree()+1];
-        for(int i = 0; i<tempCoef.length; i++){
+        for(int i = 0; i<tempCoef.length+1; i++){
             tempCoef[i] = another.coefficient(i);
         }
 
-        coefficients = Arrays.copyOf(tempCoef, tempCoef.length+1);
+        coefficients = tempCoef;
 
     }
 
@@ -67,13 +69,11 @@ public class ArrayPolynomial implements Polynomial {
          * Expand coefficients array if necessary
          */
         if (power < 0) {
-            throw new Exception("Invalid power for the term");
+                throw new Exception("Invalid power for the term");
         }
 
-
         if(power>degree()){
-            double [] tempCoefficients = Arrays.copyOf(coefficients, coefficients.length+power);
-            coefficients = Arrays.copyOf(tempCoefficients, tempCoefficients.length);//Arrays in java are objects so if I did coefficients = tempCoefficients
+            coefficients = Arrays.copyOf(coefficients, coefficients.length+power);//Arrays in java are objects so if I did coefficients = tempCoefficients
             // it would only reference it not copy it
         }
         if(coefficients[power]>0){
@@ -83,8 +83,6 @@ public class ArrayPolynomial implements Polynomial {
             coefficients[power] = coefficient;
         }
 
-
-
     }
 
     @Override
@@ -92,6 +90,10 @@ public class ArrayPolynomial implements Polynomial {
         /**
          * Complete code here
          */
+        if(power>=0){
+            coefficients[power] = 0;
+        }
+
     }
 
     @Override
@@ -100,8 +102,13 @@ public class ArrayPolynomial implements Polynomial {
          * Complete code here for lab assignment (Modify return statement !!)
          * Make sure you check power for validity !!
          */
-        
-        return coefficients[power];
+        if(power>=0 && power<=degree()){
+            return coefficients[power];
+        }
+        else{
+            return 0;
+        }
+
     }
 
     @Override
@@ -125,15 +132,33 @@ public class ArrayPolynomial implements Polynomial {
         /**
          * Complete code here for homework
          */
+
+        for(int i = 0; i<coefficients.length; i++){
+            value += coefficients[i] * Math.pow(point, i);
+        }
+
         return value;
     }
 
     @Override
-    public Polynomial add(Polynomial p) {
-        Polynomial result = new ArrayPolynomial();
+    public Polynomial add(Polynomial p) throws Exception {
+
         /**
          * Complete code here for homework
          */
+
+        int degree1 = p.degree();
+        int degree2 = this.degree();
+        int maxPower = max(degree1, degree2);
+        Polynomial result = new ArrayPolynomial(maxPower,0);
+        for(int i = 0; i<maxPower+1; i++){
+            try {
+                System.out.println(i);
+                result.addTerm(i, p.coefficient(i)+this.coefficient(i));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
         return result;
     }
 
@@ -143,6 +168,14 @@ public class ArrayPolynomial implements Polynomial {
         /**
          * Complete code here for homework
          */
+        for(int i = 0; i<max(p.degree(), this.degree()); i++){
+            try {
+                result.addTerm(i, this.coefficient(i)-p.coefficient(i) );
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
         return result;
     }
 
@@ -152,8 +185,20 @@ public class ArrayPolynomial implements Polynomial {
         /**
          * Complete code here for homework
          */
+
+        int maxPower = p.degree() + this.degree();
+        for(int i = 0; i<p.degree(); i++){
+            for(int j = 0; j < this.degree();j++){
+                try {
+                    result.addTerm(i+j, p.coefficient(i)*this.coefficient(j));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
         return result;
     }
+
 
     public String toString() {
         StringBuilder builder = new StringBuilder();
@@ -247,7 +292,7 @@ public class ArrayPolynomial implements Polynomial {
             // Exception expected
             assert true;
         }
-//        System.out.println("p2(x) + p3(x) = " + p2.add(p3));
+        System.out.println("p2(x) + p3(x) = " + p2.add(p3));
 //        Polynomial result = p2.add(p3);
 //        assert result.degree() == 5;
 //        assert Math.abs(result.coefficient(5) - 2) <= 0.0001;;

@@ -51,7 +51,7 @@ public interface Polynomial {
      * @param p
      * @return
      */
-    public Polynomial add(Polynomial p);
+    public Polynomial add(Polynomial p) throws Exception;
 
     /**
      * Returns a new polynomial that is the result of subtraction of polynomial p to this polynomial
