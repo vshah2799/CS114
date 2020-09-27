@@ -83,8 +83,7 @@ public class Maze {
                 return true;
             }
         }
-
-
+        
         return found;
     }
 
