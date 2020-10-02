@@ -12,7 +12,7 @@ public class LabCashRegister {
     private static final int INFINITY = Integer.MAX_VALUE;
 
     private int [] denominations;
-    int count = 0;
+
 
     /**
      * Constructor
@@ -25,7 +25,6 @@ public class LabCashRegister {
          */
 
         Arrays.sort(tempDenominations);
-
         if(tempDenominations[0]!=1){
             throw new Exception();
         }
@@ -42,24 +41,21 @@ public class LabCashRegister {
      * @param remainingValue
      * @return
      */
+    int count1;
     private int minimumCoinsForChange(int startDenomIndex, int remainingValue) {
         /**
          * Complete code
          */
-        if(remainingValue == 0){
-            return count;
-        }
-        else if(remainingValue-denominations[startDenomIndex]>=denominations[startDenomIndex]){
-            count += remainingValue/denominations[startDenomIndex];
-            int tempRemainingValue = remainingValue%denominations[startDenomIndex];
-            minimumCoinsForChange(startDenomIndex, tempRemainingValue);
+        if(startDenomIndex == 0){
+            count1 += remainingValue/denominations[startDenomIndex];
+            return count1;
         }
         else{
-            count += remainingValue/denominations[startDenomIndex];
+            count1 += remainingValue/denominations[startDenomIndex];
             int tempRemainingValue = remainingValue%denominations[startDenomIndex];
             minimumCoinsForChange(startDenomIndex-1, tempRemainingValue);
         }
-        return count;
+        return count1;
     }
 
     /**
@@ -67,12 +63,24 @@ public class LabCashRegister {
      * @param value value for which to make change
      * @return
      */
+    int count = 0;
     public int minimumCoinsForChange(int value) {
         /**
          * Complete code here
          */
-        return minimumCoinsForChange(denominations.length-1, value);
+        for(int i = denominations.length-1; i>=0;i--){
+            int tempNum = minimumCoinsForChange(i,value);
+            if(i==denominations.length-1){
+                count = tempNum;
+            }
+            else if(tempNum<count){
+                count = tempNum;
+            }
 
+        }
+
+        count1 = 0;
+        return count;
 
     }
 

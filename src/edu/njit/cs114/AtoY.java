@@ -42,7 +42,6 @@ public class AtoY {
             System.out.println();
         }
     }
-
     private static boolean solve(char[][] t, int row, int col, char c) {
         /**
          * Complete code here
@@ -95,8 +94,10 @@ public class AtoY {
                 }
             }
         }
+        
         return false;
     }
+
 
     public static void main(String[] args) {
         System.out.println("Enter 5 rows of lower-case letters a to z below. Note z indicates empty cell");

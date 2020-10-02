@@ -1,8 +1,5 @@
 package edu.njit.cs114;
 
-import edu.njit.cs114.ArrayPolynomial;
-import edu.njit.cs114.Polynomial;
-import edu.njit.cs114.UnitTests;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.*;
