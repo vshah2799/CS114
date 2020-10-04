@@ -44,7 +44,7 @@ public class CashRegister {
         return makeChange(0,value);
     }
 
-    public int[] makeChange(int startDenomIndex, int remainingValue){
+    private int[] makeChange(int startDenomIndex, int remainingValue){
         if(startDenomIndex >= denominations.length){
             if(remainingValue>0){
                 return initChangeArray(true);
