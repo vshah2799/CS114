@@ -32,6 +32,27 @@ public class DynamicIntArray {
         this(DEFAULT_INITIAL_CAPACITY);
     }
 
+    private void expandIfNecessary(){
+        if(size == arr.length){
+            Integer[] arr1 = new Integer[arr.length*2];
+            for(int i = 0; i<size; i++){
+                arr1[i] = arr[i];
+                nCopies++;
+            }
+            arr = arr1;
+        }
+    }
+
+    private void contractIfNecessary(){
+        if(size<=arr.length/4){
+            Integer[] tempArr = new Integer[(int)Math.ceil(arr.length/2)];
+            for(int i = 0; i<size; i++){
+                tempArr[i] = arr[i];
+                nCopies++;
+            }
+            arr = tempArr;
+        }
+    }
 
     /**
      * Add element at specified index position shifting to right elements at positions higher than
@@ -47,21 +68,15 @@ public class DynamicIntArray {
         /**
          * Complete code here
          */
-        Integer[] tempArr = new Integer[arr.length+1];
-        int arrInc = 0;
-        for(int i =0; i<tempArr.length; i++){
-            if(i==index){
-                tempArr[i] = elem;
-            }
-            else{
-                tempArr[i] = arr[arrInc];
-                arrInc++;
-            }
+        expandIfNecessary();
+
+        for(int i = size-1; i>=index; i--){
+            arr[i+1] = arr[i];
         }
 
-        size++;
+        arr[index] = elem;
 
-        arr = Arrays.copyOf(tempArr, tempArr.length);
+        size++;
     }
 
 
@@ -76,9 +91,9 @@ public class DynamicIntArray {
         Integer[] tempArr;
         if(size == arr.length){
             tempArr = Arrays.copyOf(arr, arr.length*2);
-            tempArr[arr.length - 1] = elem;
+            tempArr[size] = elem;
             size++;
-            nCopies++;
+            nCopies += tempArr.length - arr.length;
             arr = Arrays.copyOf(tempArr, tempArr.length);
         }
         else{
@@ -134,7 +149,15 @@ public class DynamicIntArray {
         /**
          * Complete code here for homework
          */
-        return 0; // to be removed once code is completed
+
+        int temp = arr[index];
+        for(int i = index; i<size; i++){
+            arr[i] = arr[i+1];
+        }
+        arr[size] = null;
+        size--;
+        contractIfNecessary();
+        return temp; // to be removed once code is completed
     }
 
     /**
@@ -149,7 +172,13 @@ public class DynamicIntArray {
         /**
          * Complete code here for homework
          */
-        return 0; // to be removed once code is completed
+
+        int temp = arr[size-1];
+        arr[size-1] = null;
+        size--;
+        contractIfNecessary();
+
+        return temp; // to be removed once code is completed
     }
 
     /**
