@@ -24,12 +24,12 @@ public class DynamicIntArray {
 
     public DynamicIntArray(int initialCapacity) {
         arr = new Integer[initialCapacity];
-        size = initialCapacity;
+        size = 0;
+        nCopies = 0;
     }
 
     public DynamicIntArray() {
         this(DEFAULT_INITIAL_CAPACITY);
-        size  = 0;
     }
 
 
@@ -64,6 +64,7 @@ public class DynamicIntArray {
         arr = Arrays.copyOf(tempArr, tempArr.length);
     }
 
+
     /**
      * Append element to the end of the array
      * @param elem
@@ -72,12 +73,19 @@ public class DynamicIntArray {
         /**
          * Complete code here
          */
+        Integer[] tempArr;
+        if(size == arr.length){
+            tempArr = Arrays.copyOf(arr, arr.length*2);
+            tempArr[arr.length - 1] = elem;
+            size++;
+            nCopies++;
+            arr = Arrays.copyOf(tempArr, tempArr.length);
+        }
+        else{
+            arr[size] = elem;
+            size++;
+        }
 
-        Integer[] tempArr = Arrays.copyOf(arr, arr.length+1);
-        tempArr[arr.length-1] = elem;
-
-        size++;
-        arr = Arrays.copyOf(tempArr, tempArr.length);
     }
 
     /**
@@ -187,7 +195,7 @@ public class DynamicIntArray {
         System.out.println("old value at index 3 after replacing it with 25 = " + arr.set(3,25));
         System.out.println("Element at position 2 = " + arr.get(2));
         System.out.println("array of size " + arr.size()+ " : " + arr);
- /*     Uncomment these for homework 4
+
         System.out.println("Removed element at position 0 = " + arr.remove(0));
         System.out.println("array of size " + arr.size()+ " : " + arr);
         System.out.println("Removed element at position 2 = " + arr.remove(2));
@@ -202,7 +210,7 @@ public class DynamicIntArray {
         arr.add(-14);
         arr.add(15);
         System.out.println("array of size " + arr.size()+ " : " + arr);
- */
+
         int [] nItemsArr = new int [] {0, 100000, 200000, 400000, 800000, 1600000, 3200000};
         DynamicIntArray arr1 = new DynamicIntArray();
         long totalTime = 0;
@@ -218,7 +226,7 @@ public class DynamicIntArray {
             System.out.println("total time(ms) for inserting " + nItemsArr[k] + " items = " +
                     + totalTime);
         }
-        /* Uncomment these for homework 4
+
         totalTime = 0;
         for (int k=1; k < nItemsArr.length; k++) {
             for (int i = 0; i < nItemsArr[k]-nItemsArr[k-1]; i++) {
@@ -230,7 +238,7 @@ public class DynamicIntArray {
             System.out.println("total time(ms) for deleting " + nItemsArr[k] + " items = " +
                     + totalTime);
         }
-         */
+
     }
 
 }
