@@ -15,8 +15,6 @@ public class DynamicIntArray {
 
     public DynamicIntArray(int initialCapacity) {
         arr = new Integer[initialCapacity];
-        size = 0;
-        nCopies = 0;
     }
 
     public DynamicIntArray() {
@@ -25,12 +23,12 @@ public class DynamicIntArray {
 
     private void expandIfNecessary(){
         if(size == arr.length){
-            Integer[] arr1 = new Integer[arr.length*2];
+            Integer[] tempArr = new Integer[arr.length*2];
             for(int i = 0; i<size; i++){
-                arr1[i] = arr[i];
+                tempArr[i] = arr[i];
                 nCopies++;
             }
-            arr = arr1;
+            arr = tempArr;
         }
     }
 
@@ -59,6 +57,7 @@ public class DynamicIntArray {
         /**
          * Complete code here
          */
+
         expandIfNecessary();
 
         for(int i = size-1; i>=index; i--){
@@ -79,18 +78,9 @@ public class DynamicIntArray {
         /**
          * Complete code here
          */
-        Integer[] tempArr;
-        if(size == arr.length){
-            tempArr = Arrays.copyOf(arr, arr.length*2);
-            tempArr[size] = elem;
-            size++;
-            nCopies += tempArr.length - arr.length;
-            arr = Arrays.copyOf(tempArr, tempArr.length);
-        }
-        else{
-            arr[size] = elem;
-            size++;
-        }
+        expandIfNecessary();
+        arr[size] = elem;
+        size++;
 
     }
 
@@ -108,6 +98,7 @@ public class DynamicIntArray {
         /**
          * Complete code here
          */
+
         int oldElem = arr[index];
         arr[index] = elem;
         return oldElem;
@@ -148,7 +139,8 @@ public class DynamicIntArray {
         arr[size] = null;
         size--;
         contractIfNecessary();
-        return temp; // to be removed once code is completed
+        return temp;
+
     }
 
     /**
@@ -169,7 +161,7 @@ public class DynamicIntArray {
         size--;
         contractIfNecessary();
 
-        return temp; // to be removed once code is completed
+        return temp;
     }
 
     /**
