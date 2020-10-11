@@ -1,13 +1,4 @@
-/*For some reason, getting the time/copy costs runs infinitely in my code. The tests, however, give the
-results that are expected when compared to what the professor has on the Lab 5 Assignment in canvas.
-However, based on the expected times from the professor, the time
-complexity and number of element copies for doing n add() operations is linear. If the number of
-elements and the copy/cost times are considered x and y, respectively, and plotted onto a graph, it is
-shown that the correlation is linear. The linear equation for copy cost would be y=(4096/3125)x-1 and
-total time would be y=(7/100000)x
-*/
 package edu.njit.cs114;
-
 import java.util.Arrays;
 
 /**
