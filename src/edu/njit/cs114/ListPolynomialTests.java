@@ -322,6 +322,7 @@ public class ListPolynomialTests extends UnitTests {
             assertTrue(approxEquals(p3.coefficient(3), 0));
             assertTrue(approxEquals(p3.coefficient(2), -7.2));
             assertTrue(approxEquals(p3.coefficient(1), 0));
+            System.out.println(p3.coefficient(0));
             assertTrue(approxEquals(p3.coefficient(0), 1.8));
             totalScore += 5;
             success("subtractTest1");

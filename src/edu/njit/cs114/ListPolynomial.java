@@ -77,6 +77,20 @@ public class ListPolynomial extends AbstractPolynomial {
         /**
          * Complete the code for homework
          */
+        Iterator<PolynomialTerm> iter1 = getIterator();
+        PolynomialTerm term1 = iter1.hasNext() ? iter1.next():null;
+        while(term1!=null){
+            if(term1.getPower()==power){
+                return term1.getCoefficient();
+            }
+            if(iter1.hasNext()){
+                term1 = iter1.next();
+            }
+            else{
+                term1=null;
+            }
+        }
+
         return 0;
     }
 
@@ -116,26 +130,39 @@ public class ListPolynomial extends AbstractPolynomial {
         }
         else{
             int index = 0;
-            for(PolynomialTerm term : termList){
-                if(term.getPower()>power){
+            Iterator<PolynomialTerm> iter1 = getIterator();
+            PolynomialTerm term1 = iter1.hasNext() ? iter1.next():null;
+            while(term1!=null){
+                if(term1.getPower()>power){
                     index++;
+                    if(iter1.hasNext()){
+                        term1 = iter1.next();
+                    }
+                    else{
+                        term1=null;
+                    }
                     continue;
                 }
-                else if(term.getPower()==power){
+                else if(term1.getPower()==power){
                     termList.remove(index);
-                    double newCoeff = coefficient + term.getCoefficient();
+                    double newCoeff = coefficient + term1.getCoefficient();
                     if(newCoeff!=0){
                         termList.add(index, new PolynomialTerm(newCoeff, power));
                         return;
                     }
                     else{
-                        termList.remove(term);
+                        termList.remove(term1);
                         return;
                     }
                 }
-                else if(term.getPower()<power){
+                else if(term1.getPower()<power){
                     termList.add(index, new PolynomialTerm(coefficient, power));
                     return;
+                }
+                if(iter1.hasNext()){
+                    term1 = iter1.next();
+                }else{
+                    term1=null;
                 }
             }
             termList.add(new PolynomialTerm(coefficient, power));
@@ -155,11 +182,18 @@ public class ListPolynomial extends AbstractPolynomial {
          */
 
         int index  = 0;
-        for(PolynomialTerm term : termList){
-            if(term.getPower()==power){
+        Iterator<PolynomialTerm> iter1 = getIterator();
+        PolynomialTerm term1 = iter1.hasNext() ? iter1.next():null;
+        while(term1!=null){
+            if(term1.getPower()==power){
                 return termList.remove(index);
             }
             index++;
+            if(iter1.hasNext()){
+                term1 = iter1.next();
+            }else{
+                term1=null;
+            }
         }
         return new PolynomialTerm(0, power);
     }
@@ -174,7 +208,18 @@ public class ListPolynomial extends AbstractPolynomial {
         /**
          * Complete the code for homework
          */
-        return 0;
+        double total = 0;
+        Iterator<PolynomialTerm> iter1 = getIterator();
+        PolynomialTerm term1 = iter1.hasNext() ? iter1.next():null;
+        while(term1!=null){
+            total += term1.getCoefficient()*Math.pow(point, term1.getPower());
+            if(iter1.hasNext()){
+                term1 = iter1.next();
+            }else{
+                term1=null;
+            }
+        }
+        return total;
     }
 
     /**
@@ -187,7 +232,8 @@ public class ListPolynomial extends AbstractPolynomial {
         /**
          * Complete the code for homework
          */
-        return null;
+
+        return addOrSubtract(p, true);
     }
 
     /**
@@ -200,8 +246,79 @@ public class ListPolynomial extends AbstractPolynomial {
         /**
          * Complete the code for homework
          */
-        return null;
+        return addOrSubtract(p, false);
     }
+
+    public Polynomial addOrSubtract(Polynomial p, boolean add){
+        ListPolynomial result = new ListPolynomial();
+        Iterator<PolynomialTerm> iter1 = this.getIterator();
+        Iterator<PolynomialTerm> iter2 = p.getIterator();
+        PolynomialTerm term1 = iter1.hasNext() ? iter1.next():null;
+        PolynomialTerm term2 = iter2.hasNext() ? iter2.next():null;
+        while(term1!=null && term2!=null){
+            if(term1.getPower()>term2.getPower()){
+                result.termList.add(term1);
+                if(iter1.hasNext()){
+                    term1 = iter1.next();
+                }else{
+                    term1 =  null;
+                }
+            }
+            else if(term2.getPower()>term1.getPower()){
+                result.termList.add(term2);
+                if(iter2.hasNext()){
+                    term2 = iter2.next();
+                }else{
+                    term2 = null;
+                }
+            }
+            else if(term1.getPower()==term2.getPower()){
+                double newCoef;
+                if(add){
+                    newCoef = term1.getCoefficient()+term2.getCoefficient();
+                }else{
+                    newCoef = term1.getCoefficient()-term2.getCoefficient();
+                }
+                if(newCoef!=0){
+                    PolynomialTerm x = new PolynomialTerm(newCoef, term1.getPower());
+                    result.termList.add(x);
+                }
+                if(iter1.hasNext()){
+                    term1 = iter1.next();
+                }else{
+                    term1 =  null;
+                }
+                if(iter2.hasNext()){
+                    term2 = iter2.next();
+                }else{
+                    term2 = null;
+                }
+
+            }
+        }
+        while(term1!=null){
+            PolynomialTerm x = new PolynomialTerm(term1.getCoefficient(), term1.getPower());
+            result.termList.add(x);
+            if(iter1.hasNext()){
+                term1 = iter1.next();
+            }else{
+                term1=null;
+            }
+        }
+        while(term2!=null){
+            PolynomialTerm x = new PolynomialTerm(term2.getCoefficient(), term2.getPower());
+            result.termList.add(x);
+            if(iter2.hasNext()){
+                term2 = iter2.next();
+            }else{
+                term2=null;
+            }
+        }
+    return result;
+    }
+
+
+
 
     /**
      * Multiply polynomial p with this polynomial and return the result
@@ -213,7 +330,26 @@ public class ListPolynomial extends AbstractPolynomial {
         /**
          * Complete the code for homework
          */
-        return null;
+        ListPolynomial result = new ListPolynomial();
+        Iterator<PolynomialTerm> iter1 = getIterator();
+        PolynomialTerm term1 = iter1.hasNext() ? iter1.next():null;
+        while(term1!=null){
+            Iterator<PolynomialTerm> iter2 = p.getIterator();
+            while(iter2.hasNext()){
+                PolynomialTerm term2 = iter2.next();
+                try {
+                    result.addTerm(term1.getPower() + term2.getPower(), term1.getCoefficient() * term2.getCoefficient());
+                }catch (Exception e){
+                    System.out.println("Error");
+                }
+            }
+            if(iter1.hasNext()){
+                term1 = iter1.next();
+            }else{
+                term1=null;
+            }
+        }
+        return result;
     }
 
     @Override
