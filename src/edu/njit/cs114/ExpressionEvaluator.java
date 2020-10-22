@@ -68,24 +68,29 @@ public class ExpressionEvaluator {
         for(ExpressionToken tok: infixExpr){
             if(tok instanceof OperandToken){
                 result.add(tok);
-            }else{
+            }
+            else{
                 OperatorToken operTok = (OperatorToken)tok;
                 if(operTok.equals(OperatorToken.OPENPAR)){
                     operatorStack.push(operTok);
-                }else if(operTok.equals(OperatorToken.CLOSEDPAR)){
+                }
+                else if(operTok.equals(OperatorToken.CLOSEDPAR)){
                     try {
                         while (operatorStack.peek() != OperatorToken.OPENPAR) {
                             result.add(operatorStack.pop());
                         }
                         operatorStack.pop();
-                    }catch(Exception e){
+                    }
+                    catch(Exception e){
                         throw e;
                     }
-                }else{
+                }
+                else{
                     while(!operatorStack.empty()){
                         if(!operTok.precedes(operatorStack.peek())){
                             result.add(operatorStack.pop());
-                        }else{
+                        }
+                        else{
                             break;
                         }
                     }
@@ -130,7 +135,8 @@ public class ExpressionEvaluator {
                         temp2 = stack.pop();
                         temp1 = stack.pop();
                         stack.push(applyOp(((OperatorToken) x), temp1, temp2));
-                    }catch(Exception e){
+                    }
+                    catch(Exception e){
                         throw new Exception("Insufficient number of operands in post fix expression " + postfixExpr);
                     }
                 }
@@ -166,6 +172,10 @@ public class ExpressionEvaluator {
         /**
          * For homework extra credit only!!
          */
+
+        System.out.println(tokens);
+
+
         return 0;
     }
 
