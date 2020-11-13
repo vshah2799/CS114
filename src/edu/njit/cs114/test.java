@@ -1,5 +1,6 @@
 package edu.njit.cs114;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.LinkedList;
 import java.util.Stack;
@@ -7,14 +8,14 @@ import java.util.Stack;
 public class test {
 
     public static void main(String[] args){
-        LinkedList<Integer> i = new LinkedList<>();
-        i.add(0);
-        i.add(1);
-        System.out.println(i);
-        System.out.println(i.peek());
-        System.out.println(i.peek());
-        System.out.println(i);
-
+    ArrayList x = new ArrayList();
+    x.add(1);
+    x.add(2);
+    x.add(3);
+    x.remove(0);
+    x.remove(1);
+    x.remove(0);
+    System.out.print(x.isEmpty());
 
 
     }
