@@ -16,7 +16,7 @@ public class BinarySearchTree<K extends Comparable<K>,V> {
         private K key;
         private V value;
         private int height;
-        // number of keys (including the key inthis node) in the subtree rooted at this node
+        // number of keys (including the key in this node) in the subtree rooted at this node
         private int size;
         private BSTNode<K, V> left, right;
 
@@ -25,9 +25,48 @@ public class BinarySearchTree<K extends Comparable<K>,V> {
             this.value = value;
             this.left = left;
             this.right = right;
+            setHeight();
+            setSize();
             /**
              * Complete code to store height and size (for homework)
              */
+        }
+
+        public void setHeight(){
+            int leftHeight;
+            int rightHeight;
+            if(left == null){
+                leftHeight = 0;
+            }else{
+                leftHeight = left.height;
+            }
+
+            if(right==null){
+                rightHeight = 0;
+            }else{
+                rightHeight = right.height;
+            }
+
+            this.height = Math.max(leftHeight, rightHeight) + 1;
+        }
+
+        public void setSize(){
+            int leftSize;
+            int rightSize;
+            if(left == null){
+                leftSize = 0;
+            }else{
+                leftSize = left.size;
+            }
+
+            if(right==null){
+                rightSize = 0;
+            }else{
+                rightSize = right.size;
+            }
+
+            this.size = 1 + leftSize + rightSize;
+
         }
 
         public BSTNode(K key, V value) {
@@ -75,23 +114,28 @@ public class BinarySearchTree<K extends Comparable<K>,V> {
          */
         @Override
         public int balanceFactor() {
+            int leftHeight;
+            int rightHeight;
+            if(left == null){
+                leftHeight = 0;
+            }else{
+                leftHeight = left.height;
+            }
+
+            if(right==null){
+                rightHeight = 0;
+            }else{
+                rightHeight = right.height;
+            }
+            setSize();
+            return leftHeight - rightHeight;
+
+
             /**
              * Complete code for the lab
              *
              */
-
-            if(leftChild()==null && rightChild()==null){
-                return 0;
-            }
-            else if(leftChild()==null){
-                return -right.height;
-            }
-            else if(rightChild()==null){
-                return left.height;
-            }
-            return left.height - right.height;
         }
-
 
         private void copy(BSTNode<K,V> node) {
             this.key = node.key;
@@ -116,15 +160,17 @@ public class BinarySearchTree<K extends Comparable<K>,V> {
         } else {
             localRoot.setValue(value);
         }
+        localRoot.setSize();
+        localRoot.setHeight();
+
+
         /**
          * Complete code to set height of localRoot for the lab (also "size" for homework)
          */
-
-        localRoot.height = height()+1;
-
-
         return localRoot;
     }
+
+
 
     /**
      * Insert/Replace (key,value) association or mapping in the tree
@@ -136,7 +182,7 @@ public class BinarySearchTree<K extends Comparable<K>,V> {
     }
 
     // Extra credit problem
-    private BSTNode<K,V> deleteAux(K key) {
+    private BSTNode<K,V> deleteAux(BSTNode<K,V> localRoot, BSTNode<K,V> parent, K key) {
         /**
          * complete for homework extra credit
          * you need to set height and size properly in the nodes of the subtrees affected
@@ -150,7 +196,7 @@ public class BinarySearchTree<K extends Comparable<K>,V> {
      * @return value deleted if key exists else null
      */
     public V delete(K key) {
-        BSTNode<K,V> node = deleteAux(key);
+        BSTNode<K,V> node = deleteAux(root, null, key);
         return node == null ? null : node.getValue();
     }
 
@@ -163,18 +209,22 @@ public class BinarySearchTree<K extends Comparable<K>,V> {
     }
 
     private boolean isBalanced(BSTNode<K,V> localRoot) {
+        if (localRoot == null){
+            return true;
+        }
+        int bf = localRoot.balanceFactor();
+        if(bf < -1 || bf > 1){
+            return false;
+        }
+        if(isBalanced(localRoot.left) && isBalanced(localRoot.right)){
+            return true;
+        }
+        else
+            return false;
+
         /**
          * Complete code here for the lab
          */
-        if(localRoot == null){
-            return true;
-        }
-        else if(localRoot.balanceFactor() >=0){
-            isBalanced()
-        }
-
-
-         return false;
     }
 
     /**
@@ -192,6 +242,29 @@ public class BinarySearchTree<K extends Comparable<K>,V> {
      */
     public Map<Integer, List<BSTNode<K,V>>> getNodeLevels() {
         Map<Integer, List<BSTNode<K,V>>> nodeLevels = new HashMap<>();
+        if(this.root == null){ return nodeLevels;}
+
+        ArrayList<BSTNode<K,V>> parentNodeList = new ArrayList<BSTNode<K,V>>();
+        parentNodeList.add(this.root);
+        int level = 0;
+        nodeLevels.put(level,parentNodeList);
+        while(!parentNodeList.isEmpty()){
+            ArrayList<BSTNode<K, V>> childrenNodeList = new ArrayList<BSTNode<K, V>>();
+            for(BSTNode<K,V> parentNode : parentNodeList) {
+                if (parentNode.leftChild() != null) {
+                    childrenNodeList.add(parentNode.left);
+                }
+                if (parentNode.rightChild() != null) {
+                    childrenNodeList.add(parentNode.right);
+                }
+            }
+            level += 1;
+            if(!childrenNodeList.isEmpty()){
+                nodeLevels.put(level,childrenNodeList);
+            }
+            parentNodeList = childrenNodeList;
+        }
+
         /**
          * Complete code for the lab
          */
@@ -206,10 +279,45 @@ public class BinarySearchTree<K extends Comparable<K>,V> {
      * @return
      */
     public List<BSTNode<K,V>> getRange(K key1, K key2) {
+        ArrayList<BSTNode<K,V>> list = new ArrayList<BSTNode<K,V>>();
+        if(key1.compareTo(key2) > 0){
+            return list;
+        }
+
+        return getRangeAux(root,key1,key2);
         /**
          * Complete code for homework (define a recursive aux function to be called from here)
          */
-        return null;
+    }
+
+    private List<BSTNode<K,V>> getRangeAux(BSTNode<K,V>localroot, K key1, K key2){
+        ArrayList <BSTNode<K,V>> list = new ArrayList<BSTNode<K,V>>();
+        if(localroot == null){
+            return list;
+        }
+        if(key2.compareTo(localroot.key) <= 0){
+            if(key1.compareTo(localroot.key) < 0){
+                list.addAll(getRangeAux(localroot.left, key1, key2));
+            }
+            if(key2.compareTo(localroot.key) == 0){
+                list.add(localroot);
+            }
+            return list;
+        }
+        else if(key2.compareTo(localroot.key) > 0){
+            if(key1.compareTo(localroot.key) >= 0){
+                if(key1.compareTo(localroot.key) == 0){
+                    list.add(root);
+                    }
+                list.addAll(getRangeAux(localroot.right, key1, key2));
+                }
+            if(key1.compareTo(localroot.key) < 0){
+                list.addAll(getRangeAux(localroot.left, key1, key2));
+                list.add(localroot);
+                list.addAll(getRangeAux(localroot.right, key1, key2));
+            }
+        }
+        return list;
     }
 
     /**
@@ -217,11 +325,33 @@ public class BinarySearchTree<K extends Comparable<K>,V> {
      * @param key
      * @return
      */
+
+    private int rankAux(BSTNode<K,V> root, K key){
+        int nKeys = 0;
+        if(root == null){return 0;}
+        if(key.compareTo(root.key) < 0){
+            return rankAux(root.left, key);
+        }
+        else {
+            if(root.left == null){
+                nKeys = 0;
+            }
+            else{
+                nKeys = root.left.size;
+            }
+            nKeys++;
+            if(key.compareTo(root.key) > 0){
+                nKeys = nKeys + rankAux(root.right, key);
+            }
+        }
+        return nKeys;
+    }
+
     public int rank(K key) {
+        return rankAux(root,key);
         /**
          * Complete code for homework (define a recursive aux function to be called from here)
          */
-        return 0;
     }
 
 
@@ -274,31 +404,31 @@ public class BinarySearchTree<K extends Comparable<K>,V> {
             }
             System.out.println("");
         }
-//        System.out.println("rank of key 10 in bst=" + bst.rank(10)); // should be 3
-//        System.out.println("rank of key 30 in bst=" + bst.rank(30)); // should be 6
-//        System.out.println("rank of key 3 in bst=" + bst.rank(3)); // should be 0
-//        System.out.println("rank of key 55 in bst=" + bst.rank(50)); // should be 9
-//        List<BSTNode<Integer,Integer>> rangeNodes = bst1.getRange(32,62);
-//        System.out.print("Keys in the range : [32,62] are:");
-//        // should get 32,44,48,50,62,
-//        for (BSTNode<Integer,Integer> node : rangeNodes) {
-//            System.out.print(node.key + ",");
-//        }
-//        System.out.println("");
-//        rangeNodes = bst1.getRange(10,50);
-//        System.out.print("Keys in the range : [10,50] are:");
-//        // should get 17,32,44,48,50,
-//        for (BSTNode<Integer,Integer> node : rangeNodes) {
-//            System.out.print(node.key + ",");
-//        }
-//        System.out.println("");
-//        rangeNodes = bst1.getRange(90,100);
-//        System.out.print("Keys in the range : [90,100] are:");
-//        // should get empty list
-//        for (BSTNode<Integer,Integer> node : rangeNodes) {
-//            System.out.print(node.key + ",");
-//        }
-//        System.out.println("");
+        System.out.println("rank of key 10 in bst=" + bst.rank(10)); // should be 3
+        System.out.println("rank of key 30 in bst=" + bst.rank(30)); // should be 6
+        System.out.println("rank of key 3 in bst=" + bst.rank(3)); // should be 0
+        System.out.println("rank of key 55 in bst=" + bst.rank(50)); // should be 9
+        List<BSTNode<Integer,Integer>> rangeNodes = bst1.getRange(32,62);
+        System.out.print("Keys in the range : [32,62] are:");
+        // should get 32,44,48,50,62,
+        for (BSTNode<Integer,Integer> node : rangeNodes) {
+            System.out.print(node.key + ",");
+        }
+        System.out.println("");
+       rangeNodes = bst1.getRange(10,50);
+        System.out.print("Keys in the range : [10,50] are:");
+        // should get 17,32,44,48,50,
+        for (BSTNode<Integer,Integer> node : rangeNodes) {
+            System.out.print(node.key + ",");
+        }
+        System.out.println("");
+        rangeNodes = bst1.getRange(90,100);
+        System.out.print("Keys in the range : [90,100] are:");
+        // should get empty list
+        for (BSTNode<Integer,Integer> node : rangeNodes) {
+            System.out.print(node.key + ",");
+        }
+        System.out.println("");
     }
 
 }
