@@ -110,6 +110,9 @@ public class RelationalQueryProcessor {
              * Get row for table 1
              * Get iterator for rows of table2 and loop through the rows of table 2
              */
+
+
+
         }
         return joinTable;
     }
